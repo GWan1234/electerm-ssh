@@ -1175,7 +1175,26 @@ clear\r`
 
       // Broadcast to other terminals
       this.broadcastSocketData(data)
+      this.clearKeepAliveInterval()
     }
+    this.initKeepaliveInterval()
+  }
+
+  keepAlive = () => {
+    console.log('keep alive')
+    this.socket.send('')
+  }
+
+  initKeepaliveInterval = () => {
+    this.timers.keepaliveIntervalTimer = setInterval(this.keepAlive, this.props.config.keepaliveInterval || 5000)
+  }
+
+  clearKeepAliveInterval = () => {
+    if (this.timers.keepaliveIntervalTimer) {
+      clearInterval(this.timers.keepaliveIntervalTimer)
+      this.timers.keepaliveIntervalTimer = null
+    }
+    this.initKeepaliveInterval()
   }
 
   canReceiveBroadcast = (termRef) => {
